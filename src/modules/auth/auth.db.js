@@ -1,6 +1,6 @@
 import prisma from "../../prisma/client.js";
 
-async function createNewUser(fullName, email, password, phone) {
+export const createNewUser = async (fullName, email, password, phone) => {
     const user = await prisma.users.create({
         data: {
             fullName,
@@ -12,7 +12,7 @@ async function createNewUser(fullName, email, password, phone) {
     return user;
 }
 
-async function checkUserExistence(email, phone) {
+export const checkUserExistence = async (email, phone) => {
     const user = await prisma.users.findFirst({
         where: {
             OR: [
@@ -24,7 +24,15 @@ async function checkUserExistence(email, phone) {
     return user;
 }
 
-export {
-    createNewUser,
-    checkUserExistence
-};
+export const getUserByEmail = async (email) => {
+    try {
+        const user = await prisma.users.findUnique({
+            where: {
+                email
+            }
+        });
+        return user;
+    } catch (error) {
+        throw new Error("Failed to fetch user");
+    }
+}
