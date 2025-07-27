@@ -36,3 +36,14 @@ export const getUserByEmail = async (email) => {
         throw new Error("Failed to fetch user");
     }
 }
+
+export const storeRefreshToken = async (userId, refreshToken) => {
+    try {
+        return await prisma.users.update({
+            where: { id: userId },
+            data: { refreshToken }
+        });
+    } catch (error) {
+        throw new Error("Error while storing refresh token");
+    }
+}
