@@ -1,16 +1,17 @@
 import { checkUserExistence, createNewUser, getUserByEmail, storeRefreshToken } from "./auth.db.js";
 import { encryptPassword, generateAccessToken, generateRefreshToken, validatePassword } from "./auth.service.js";
+import { AppError } from "@/utils/AppError.js";
 
 const signupUser = async (req, res) => {
     const { fullName, email, password, phone } = req.body;
     const userExists = await checkUserExistence(email, phone);
 
     if(userExists) {
-        throw new Error("User already exists");
+        throw new AppError(409, "User already exists");
     }
     
     if(!fullName || !email || !password || !phone) {
-        throw new Error("All fields are required");
+        throw new AppError(400, "All fields are required");
     }
 
     const hashedPassword = await encryptPassword(password);
@@ -29,13 +30,13 @@ const signinUser = async (req, res) => {
     const user = await getUserByEmail(email);
 
     if(!user) {
-        throw new Error("User does not exist");
+        throw new AppError(404, "User does not exist");
     } 
 
     const hashedPassword = user.password;
     
     if(!(await validatePassword(password, hashedPassword))) {
-        throw new Error("Incorrect password");
+        throw new AppError(400, "Incorrect password");
     }
 
     const payload = { id: user.id, email: user.email, role: user.role };
