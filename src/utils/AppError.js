@@ -1,4 +1,4 @@
-class CustomError extends Error {
+class AppError extends Error {
     constructor(
         statusCode = 500, 
         message = "Internal server error",
@@ -20,4 +20,4 @@ class CustomError extends Error {
     }
 };
 
-export { CustomError };
+export { AppError };
