@@ -1,3 +1,4 @@
+import { AppError } from "#utils/AppError.js";
 import prisma from "../../prisma/client.js";
 
 export const createNewUser = async (fullName, email, password, phone) => {
@@ -33,17 +34,23 @@ export const getUserByEmail = async (email) => {
         });
         return user;
     } catch (error) {
-        throw new Error("Failed to fetch user");
+        throw new AppError(500, "Failed to fetch user");
     }
 }
 
-export const storeRefreshToken = async (userId, refreshToken) => {
+export const storeRefreshToken = async (userId, refreshToken, ipAddress, userAgent, expiresAt) => {
     try {
-        return await prisma.users.update({
-            where: { id: userId },
-            data: { refreshToken }
+        return await prisma.refreshToken.create({
+            data: {
+                token: refreshToken,
+                userId: userId,
+                ip: ipAddress,
+                userAgent: userAgent,
+                expiresAt: expiresAt
+            }
         });
     } catch (error) {
-        throw new Error("Error while storing refresh token");
+        console.log(error)
+        throw new AppError(500, "Error while storing refresh token");
     }
 }
