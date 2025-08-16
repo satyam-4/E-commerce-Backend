@@ -13,12 +13,33 @@ enum Role {
   seller
 }
 
+enum OrderStatus {
+  pending
+  processing
+  shipped
+  delivered
+  cancelled
+}
+
 model users {
-  id            Int @id @default(autoincrement())
+  id            Int       @id @default(autoincrement())
   fullName      String
-  email         String @unique
+  email         String    @unique
   password      String 
-  phone         String @unique
-  role          Role @default(user) 
-  refreshToken  String?
+  phone         String    @unique
+  role          Role      @default(user) 
+  refreshToken refreshToken[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model refreshToken {
+  id         Int       @id @default(autoincrement())
+  token      String  
+  userId     Int
+  user       users     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userAgent  String?
+  ip         String?
+  expiresAt  DateTime
+  createdAt  DateTime  @default(now())
 }
