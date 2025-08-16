@@ -1,6 +1,6 @@
 import { checkUserExistence, createNewUser, getUserByEmail, storeRefreshToken } from "./auth.db.js";
 import { encryptPassword, generateAccessToken, generateRefreshToken, validatePassword } from "./auth.service.js";
-import { AppError } from "@/utils/AppError.js";
+import { AppError } from "#utils/AppError.js";
 
 const signupUser = async (req, res) => {
     const { fullName, email, password, phone } = req.body;
@@ -43,7 +43,12 @@ const signinUser = async (req, res) => {
     const accessToken = await generateAccessToken(payload);
     const refreshToken = await generateRefreshToken(payload);
 
-    await storeRefreshToken(user.id, refreshToken);
+    const ipAddress = req.ip;
+    const userAgent = req.headers['user-agent'];
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + 7);
+
+    await storeRefreshToken(user.id, refreshToken, ipAddress, userAgent, expiresAt);
 
     return res 
     .status(200)
@@ -61,7 +66,17 @@ const signinUser = async (req, res) => {
     });
 };
 
+const getMe = async (req, res) => {
+    const user = req.user;
+    return res
+    .status(200)
+    .json({
+        user
+    });
+};
+
 export {
     signinUser,
-    signupUser
+    signupUser,
+    getMe
 };
