@@ -3,19 +3,19 @@ import { encryptPassword, generateAccessToken, generateRefreshToken, validatePas
 import { AppError } from "#utils/AppError.js";
 
 const signupUser = async (req, res) => {
-    const { fullName, email, password, phone } = req.body;
+    const { fullName, email, password, phone, address } = req.body;
     const userExists = await checkUserExistence(email, phone);
 
     if(userExists) {
         throw new AppError(409, "User already exists");
     }
     
-    if(!fullName || !email || !password || !phone) {
+    if(!fullName || !email || !password || !phone || !address) {
         throw new AppError(400, "All fields are required");
     }
 
     const hashedPassword = await encryptPassword(password);
-    const user = createNewUser(fullName, email, hashedPassword, phone)
+    const user = createNewUser(fullName, email, hashedPassword, phone, address)
     return res
     .status(200)
     .json({
@@ -66,17 +66,7 @@ const signinUser = async (req, res) => {
     });
 };
 
-const getMe = async (req, res) => {
-    const user = req.user;
-    return res
-    .status(200)
-    .json({
-        user
-    });
-};
-
 export {
     signinUser,
-    signupUser,
-    getMe
+    signupUser
 };
