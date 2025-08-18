@@ -8,7 +8,7 @@ datasource db {
 }
 
 enum Role {
-  user
+  buyer
   admin
   seller
 }
@@ -22,18 +22,20 @@ enum OrderStatus {
 }
 
 model users {
-  id            Int       @id @default(autoincrement())
+  id            Int             @id @default(autoincrement())
   fullName      String
-  email         String    @unique
+  email         String          @unique
   password      String 
-  phone         String    @unique
-  role          Role      @default(user) 
-  refreshToken refreshToken[]
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  phone         String          @unique
+  address       String    
+  role          Role            @default(buyer) 
+  refreshtoken  refreshtoken[] 
+  seller        seller[]
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
 }
 
-model refreshToken {
+model refreshtoken {
   id         Int       @id @default(autoincrement())
   token      String  
   userId     Int
@@ -42,4 +44,25 @@ model refreshToken {
   ip         String?
   expiresAt  DateTime
   createdAt  DateTime  @default(now())
+}
+
+model seller {
+  id             String   @id @default(uuid())
+  sellerId       Int      @unique
+  user           users    @relation(fields: [sellerId], references: [id])
+  pickupAddress  String
+  businessName   String
+  gstNumber      String?
+  bankInfo       String?
+  product        product[]
+}
+
+model product {
+  id           Int       @id @default(autoincrement())
+  name         String  
+  price        Float
+  description  String
+  createdAt    DateTime  @default(now())
+  sellerId     String
+  seller       seller    @relation(fields: [sellerId], references: [id], onDelete: Cascade)
 }
