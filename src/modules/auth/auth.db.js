@@ -1,13 +1,14 @@
 import { AppError } from "#utils/AppError.js";
 import prisma from "../../prisma/client.js";
 
-export const createNewUser = async (fullName, email, password, phone) => {
+export const createNewUser = async (fullName, email, password, phone, address) => {
     const user = await prisma.users.create({
         data: {
             fullName,
             email,
             password,
-            phone
+            phone,
+            address
         }
     });
     return user;
@@ -40,7 +41,7 @@ export const getUserByEmail = async (email) => {
 
 export const storeRefreshToken = async (userId, refreshToken, ipAddress, userAgent, expiresAt) => {
     try {
-        return await prisma.refreshToken.create({
+        return await prisma.refreshtoken.create({
             data: {
                 token: refreshToken,
                 userId: userId,
