@@ -1,5 +1,5 @@
 import { AppError } from "#utils/AppError.js";
-import { addProducts, getAllProducts, getProductById, updateProductById } from "./product.db.js";
+import { addProducts, deleteProductById, getAllProducts, getProductById, updateProductById } from "./product.db.js";
 
 const createProducts = async (req, res) => {
     const userId = req.user.id;
@@ -75,8 +75,20 @@ const updateProduct = async (req, res) => {
     });
 };
 
-const deleteProduct = async () => {
+const deleteProduct = async (req, res) => {
+    const userId = req.user.id;
+    const { id } = req.params;
+    const productId = parseInt(id, 10);
 
+    const deletedProduct = await deleteProductById(productId, userId);
+
+    return res
+    .status(200)
+    .json({
+        success: true,
+        message: "Successfully deleted the product",
+        data: deletedProduct
+    });
 };
 
 export {
