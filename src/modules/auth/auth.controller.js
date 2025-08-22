@@ -1,5 +1,5 @@
 import { checkUserExistence, createNewUser, getUserByEmail, storeRefreshToken } from "./auth.db.js";
-import { encryptPassword, generateAccessToken, generateRefreshToken, validatePassword } from "./auth.service.js";
+import { encryptPassword, generateAccessToken, generateRefreshToken, verifyPassword } from "./auth.service.js";
 import { AppError } from "#utils/AppError.js";
 
 const signupUser = async (req, res) => {
@@ -9,13 +9,9 @@ const signupUser = async (req, res) => {
     if(userExists) {
         throw new AppError(409, "User already exists");
     }
-    
-    if(!fullName || !email || !password || !phone || !address) {
-        throw new AppError(400, "All fields are required");
-    }
 
     const hashedPassword = await encryptPassword(password);
-    const user = createNewUser(fullName, email, hashedPassword, phone, address)
+    const user = await createNewUser(fullName, email, hashedPassword, phone, address);
     return res
     .status(200)
     .json({
@@ -35,7 +31,7 @@ const signinUser = async (req, res) => {
 
     const hashedPassword = user.password;
     
-    if(!(await validatePassword(password, hashedPassword))) {
+    if(!(await verifyPassword(password, hashedPassword))) {
         throw new AppError(400, "Incorrect password");
     }
 
