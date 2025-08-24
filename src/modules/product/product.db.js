@@ -34,7 +34,8 @@ export const getAllProducts = async () => {
 
 export const getProductById = async (productId) => {
     try {
-        const product = prisma.product.findFirst({
+        if(!productId) return null;
+        const product = prisma.product.findUnique({
             where: {
                 id: productId
             }
