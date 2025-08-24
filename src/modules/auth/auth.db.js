@@ -51,7 +51,6 @@ export const storeRefreshToken = async (userId, refreshToken, ipAddress, userAge
             }
         });
     } catch (error) {
-        console.log(error)
         throw new AppError(500, "Error while storing refresh token");
     }
 }
