@@ -2,37 +2,42 @@ import { body } from "express-validator";
 
 export const signupValidator = [
     body("fullName")
-        .isString().withMessage("Full name must be a string")
-        .isLength({ min: 3, max: 50}).withMessage("Full name must be between 3 and 50 characters")
-        .notEmpty().withMessage("Full name is required"),
+        .notEmpty().withMessage("Full name is required").bail()
+        .isString().withMessage("Full name must be a string").bail()
+        .isLength({ min: 3, max: 50}).withMessage("Full name must be between 3 and 50 characters"),
 
     body("email")
-        .isEmail().withMessage("Invalid email address")
-        .normalizeEmail()
-        .notEmpty().withMessage("Email is required"),
+        .notEmpty().withMessage("Email is required").bail()
+        .isString().withMessage("Email must be a string").bail()
+        .isEmail().withMessage("Invalid email address").bail()
+        .normalizeEmail(),
 
     body("password")
-        .isLength({ min: 6, max: 12 }).withMessage("Password must be between 6 and 12 characters")
-        .matches(/[0-9]/).withMessage("Password must contain atleast one number")
-        .matches(/[A-Z]/).withMessage("Password must contain atleast one uppercase letter")
-        .notEmpty().withMessage("Password is required"),
+        .notEmpty().withMessage("Password is required").bail()
+        .isString().withMessage("Password must be string").bail()
+        .isLength({ min: 6, max: 12 }).withMessage("Password must be between 6 and 12 characters").bail()
+        .matches(/[0-9]/).withMessage("Password must contain atleast one number").bail()
+        .matches(/[A-Z]/).withMessage("Password must contain atleast one uppercase letter"),
 
     body("phone")
-        .isMobilePhone().withMessage("Invalid phone number")
-        .notEmpty().withMessage("Phone is required"),
+        .notEmpty().withMessage("Phone is required").bail()
+        .isString().withMessage("Phone number must be a string").bail()
+        .isMobilePhone().withMessage("Invalid phone number"),
 
     body("address")
-        .isString().withMessage("Address must be a string")
-        .isLength({ max: 100 }).withMessage("Address must not exceed 100 characters")
-        .notEmpty().withMessage("Address is required"),
+        .notEmpty().withMessage("Address is required").bail()
+        .isString().withMessage("Address must be a string").bail()
+        .isLength({ max: 100 }).withMessage("Address must not exceed 100 characters"),
 ];
 
 export const sigininValidator = [
     body("email")
-        .isEmail().withMessage("Invalid email address")
-        .normalizeEmail()
-        .notEmpty().withMessage("Email is required"),
+        .notEmpty().withMessage("Email is required").bail()
+        .isString().withMessage("Email must be a string").bail()
+        .isEmail().withMessage("Invalid email address").bail()
+        .normalizeEmail(),
 
     body("password")
-        .notEmpty().withMessage("Password is required")
+        .notEmpty().withMessage("Password is required").bail()
+        .isString().withMessage("Password must be a string"),
 ];
