@@ -1,0 +1,65 @@
+import { body, param } from "express-validator";
+
+export const createProductValidator = [
+    body("name")
+        .notEmpty().withMessage("Product name is required").bail()
+        .isString().withMessage("Product name must be a string").bail()
+        .isLength({ min: 2, max: 100 }).withMessage("Product name must be between 2 and 100 characters"),
+
+    body("price")
+        .notEmpty().withMessage("Price is required").bail()
+        .isFloat({ min: 1, max: 1000000 }).withMessage("Price must be between 1 and 1,000,000")
+        .toFloat(),
+
+    body("description")
+        .notEmpty().withMessage("Product description is required").bail()
+        .isString().withMessage("Product description must be a string").bail()
+        .isLength({ min: 10, max: 500 }).withMessage("Product description must be between 10 and 500 characters"),
+];
+
+export const getProductByIdValidator = [
+    param("id")
+        .isInt({ min: 1 }).withMessage("Product ID must be an integer").bail()
+        .toInt(),
+];
+
+export const updateProductValidator = [
+    param("id")
+        .notEmpty().withMessage("Product ID is required").bail()
+        .isInt({ min: 1 }).withMessage("Product ID must be an integer").bail()
+        .toInt(),
+
+    body("name")
+        .optional()
+        .isString().withMessage("Product name must be a string").bail()
+        .isLength({ min: 2, max: 100 }).withMessage("Product name must be between 2 and 100 characters"),
+        
+    body("price")
+        .optional()
+        .isFloat({ min: 1, max: 1000000 }).withMessage("Price must be between 1 and 1,000,000").bail()
+        .toFloat(),
+
+    body("description")
+        .optional()
+        .isString().withMessage("Product description must be a string").bail()
+        .isLength({ min: 10, max: 500 }).withMessage("Product description must be between 10 and 500 characters"),
+
+    body().custom((_, { req }) => {
+        const allowedFields = ["name", "price", "description"];
+        Object.keys(req.body).forEach((field) => {
+            if(!allowedFields.includes(field))
+                delete req.body[field];
+        });
+
+        if(Object.keys(req.body).length === 0)
+            throw new Error("At least one field must be provided");
+
+        return true;
+    })
+];
+
+export const deleteProductValidator = [
+    param("id")
+        .isInt({ min: 1 }).withMessage("Product ID must be integer").bail()
+        .toInt(),
+];
