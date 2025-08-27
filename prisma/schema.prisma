@@ -31,6 +31,7 @@ model users {
   role          Role            @default(buyer) 
   refreshtoken  refreshtoken[] 
   seller        seller[]
+  cart          cart?
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
 }
@@ -62,7 +63,33 @@ model product {
   name         String  
   price        Float
   description  String
-  createdAt    DateTime  @default(now())
   sellerId     String
   seller       seller    @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+  cartitem     cartitem[]
+  createdAt    DateTime  @default(now())
+}
+
+model cart {
+  id         Int       @id @default(autoincrement())
+  userId     Int       @unique
+  user       users     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items      cartitem[]
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+model cartitem {
+  id         Int       @id @default(autoincrement())
+  cartId     Int       
+  cart       cart      @relation(fields: [cartId], references: [id], onDelete: Cascade)  
+
+  productId  Int
+  product    product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  quantity   Int       @default(1)
+
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@unique([cartId, productId])
 }
