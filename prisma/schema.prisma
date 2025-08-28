@@ -21,7 +21,7 @@ enum OrderStatus {
   cancelled
 }
 
-model users {
+model user {
   id            Int             @id @default(autoincrement())
   fullName      String
   email         String          @unique
@@ -55,41 +55,37 @@ model seller {
   businessName   String
   gstNumber      String?
   bankInfo       String?
-  product        product[]
+  products       product[]
+}
+
+model category {
+  id           Int       @id @default(autoincrement())
+  name         String    @unique
+  description  String?  
+  subcatories  sub-category[]  
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model sub-category {
+  id           Int       @id @default(autoincrement())
+  name         String    @unique
+  description  String?
+  categoryId   Int
+  category     category  @relation(fields: [category], references: [id], onDelete: Cascade)
+  products     product[]
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 }
 
 model product {
-  id           Int       @id @default(autoincrement())
-  name         String  
-  price        Float
-  description  String
-  sellerId     String
-  seller       seller    @relation(fields: [sellerId], references: [id], onDelete: Cascade)
-  cartitem     cartitem[]
-  createdAt    DateTime  @default(now())
-}
-
-model cart {
-  id         Int       @id @default(autoincrement())
-  userId     Int       @unique
-  user       users     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  items      cartitem[]
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
-}
-
-model cartitem {
-  id         Int       @id @default(autoincrement())
-  cartId     Int       
-  cart       cart      @relation(fields: [cartId], references: [id], onDelete: Cascade)  
-
-  productId  Int
-  product    product   @relation(fields: [productId], references: [id], onDelete: Cascade)
-
-  quantity   Int       @default(1)
-
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
-
-  @@unique([cartId, productId])
+  id             Int           @id @default(autoincrement())
+  name           String  
+  price          Float
+  description    String
+  subCategoryId  Int
+  subCategory    sub-category  @relation(fields: [subCategoryId], references: [id], onDelete: Cascade)
+  sellerId       String
+  seller         seller        @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+  createdAt      DateTime      @default(now())
 }
