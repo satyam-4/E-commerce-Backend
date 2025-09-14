@@ -13,7 +13,7 @@ const signupUser = async (req, res) => {
     const hashedPassword = await encryptPassword(password);
     const user = await createNewUser(fullName, email, hashedPassword, phone, address);
     return res
-    .status(200)
+    .status(201)
     .json({
         success: true,
         user,
