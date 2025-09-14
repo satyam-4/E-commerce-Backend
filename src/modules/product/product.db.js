@@ -1,27 +1,117 @@
 import { AppError } from "#utils/AppError.js";
 import prisma from "../../prisma/client.js";
 
-export const addProducts = async (userId, name, price, description) => {
+export const addProducts = async (name, description, subcategoryId) => {
     try {
-        const seller = await prisma.seller.findUnique({
-            where: { sellerId: userId }
-        })
+        const subcategory = await prisma.subcategory.findUnique({
+            where: { id: subcategoryId }
+        });
         
+        if(!subcategory) {
+            throw new AppError(404, "Subcategory not found");
+        }
+
         const product = await prisma.product.create({
             data: {
                 name,
-                price,
                 description,
-                sellerId: seller.id
+                subcategoryId: subcategoryId
             }
         });
 
         return product;
     } catch (error) {
-        console.log(error)
-        throw new AppError(500, "Error while adding product");
+        if(error instanceof AppError) {
+            throw error;
+        }
+
+        throw new AppError(500, "Error while creating new product");
     }
 };
+
+export const destroyProduct = async (productId) => {
+    try {
+        const product = await prisma.product.findFirst({
+            where: { id: productId }
+        });
+
+        if(!product) {
+            throw new AppError(404, "Product not found");
+        }
+
+        const deletedProduct = await prisma.product.delete({
+            where: { id: productId }
+        });
+
+        return deletedProduct;
+    } catch (error) {
+        if(error instanceof AppError) {
+            throw error;
+        }
+
+        throw new AppError(500, "Error while deleting the product");
+    }
+};
+
+export const addProductVariant = async (productId, sku, attributes) => {
+    try {
+        const product = await prisma.product.findUnique({
+            where: { id: productId }
+        });
+
+        if(!product) {
+            throw new AppError(404, "Product not found");
+        }
+
+        const variant = await prisma.variant.create({
+            data: {
+                sku: sku,
+                productId: productId,
+                attributes: attributes
+            }
+        });
+
+        return variant;
+    } catch (error) {
+        if(error instanceof AppError) {
+            throw error;
+        }
+
+        throw new AppError(500, "Error while creating variant of a product");
+    }
+};
+
+export const destroyProductVariant = async (productId, variantId) => {
+    try {
+        const product = await prisma.product.findUnique({
+            where: { id: productId }
+        });
+
+        if(!product) {
+            throw new AppError(404, "Product not found");
+        }
+
+        const variant = await prisma.variant.findUnique({
+            where: { id: variantId } 
+        });
+
+        if(!variant) {
+            throw new AppError(404, "Variant not found");
+        }
+
+        await prisma.variant.delete({
+            where: { id: variantId }
+        });
+
+        return variant;
+    } catch (error) {
+        if(error instanceof AppError) {
+            throw error;
+        }
+
+        throw new AppError(500, "Error while deleting product variant");
+    }
+}
 
 export const getAllProducts = async () => {
     try {
@@ -84,41 +174,3 @@ export const updateProductById = async (productId, userId, updateData) => {
     }
 };
 
-export const deleteProductById = async (productId, userId) => {
-    try {
-        const seller = await prisma.seller.findFirst({
-            where: {
-                sellerId: userId
-            }
-        });
-
-        const sellerId = seller.id;
-
-        const product = await prisma.product.findFirst({
-            where: {
-                id: productId,
-                sellerId: sellerId
-            }
-        });
-
-        if(!product) {
-            throw new AppError(400, "You cannot delete this product");
-        }
-
-        const deletedProduct = await prisma.product.delete({
-            where: {
-                id: productId
-            }
-        });
-
-        return deletedProduct;
-    } catch (error) {
-        console.log("This is the error->", error)
-
-        if(error instanceof AppError) {
-            throw error;
-        }
-
-        throw new AppError(500, "Error while deleting the product");
-    }
-};

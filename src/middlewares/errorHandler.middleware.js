@@ -8,7 +8,6 @@ export const errorHandler = (err, req, res, next) => {
         success: err.success,
         message: err.message,   
         errors: err.errors,
-        data: err.data,
-        stack: err.stack
+        data: err.data
     });
 };

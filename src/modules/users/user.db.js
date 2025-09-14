@@ -3,9 +3,9 @@ import prisma from "../../prisma/client.js"
 
 export const createNewSeller = async (userId, pickupAddress, businessName, gstNumber, bankInfo) => {
     try {
-        await prisma.users.update({
+        await prisma.user.update({
             where: { id: userId },
-            data: { role: "seller" }
+            data: { role: "SELLER" }
         }); 
 
         const seller = await prisma.seller.create({
