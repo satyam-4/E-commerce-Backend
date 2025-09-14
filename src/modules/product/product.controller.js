@@ -1,18 +1,70 @@
 import { AppError } from "#utils/AppError.js";
-import { addProducts, deleteProductById, getAllProducts, getProductById, updateProductById } from "./product.db.js";
+import { 
+    addProducts, 
+    addProductVariant, 
+    destroyProduct, 
+    destroyProductVariant, 
+    getAllProducts, 
+    getProductById, 
+    updateProductById 
+} from "./product.db.js";
 
-const createProducts = async (req, res) => {
-    const userId = req.user.id;
-    const { name, price, description } = req.body;
+const createProduct = async (req, res) => {
+    const { name, description, subcategoryId } = req.body;
     
-    const product = await addProducts(userId, name, price, description);
+    const product = await addProducts(name, description, subcategoryId);
 
     return res
     .status(200)
     .json({
         success: true,
-        message: "Product added sucessfully",
+        message: "Product created sucessfully",
         product: product
+    });
+};
+
+const deleteProduct = async (req, res) => {
+    const { productId } = req.params;
+
+    const deletedProduct = await destroyProduct(productId);
+
+    return res
+    .status(200)
+    .json({
+        success: true,
+        message: "Successfully deleted the product",
+        data: deletedProduct
+    });
+};
+
+const createProductVariant = async (req, res) => {
+    const productId = req.params.productId;
+    const { sku, attributes } = req.body;
+
+    const variant = await addProductVariant(productId, sku, attributes);
+
+    return res
+    .status(201)
+    .json({
+        success: true,
+        message: "Product variant created successfully",
+        data: variant
+    });
+}
+
+const deleteProductVariant = async (req, res) => {
+    const { productId, variantId } = req.params;
+    
+    console.log(productId, variantId)
+
+    const deletedVariant = await destroyProductVariant(productId, variantId);
+
+    return res
+    .status(200)
+    .json({
+        success: true,
+        message: "Deleted product variant successfully",
+        data: deletedVariant
     });
 };
 
@@ -60,25 +112,12 @@ const updateProduct = async (req, res) => {
     });
 };
 
-const deleteProduct = async (req, res) => {
-    const userId = req.user.id;
-    const { id: productId } = req.params;
-
-    const deletedProduct = await deleteProductById(productId, userId);
-
-    return res
-    .status(200)
-    .json({
-        success: true,
-        message: "Successfully deleted the product",
-        data: deletedProduct
-    });
-};
-
 export {
-    createProducts,
+    createProduct,
+    deleteProduct,
+    createProductVariant,
+    deleteProductVariant,
     getProducts,
     getProductsById,
     updateProduct,
-    deleteProduct
 };

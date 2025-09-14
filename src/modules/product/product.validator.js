@@ -6,16 +6,45 @@ export const createProductValidator = [
         .isString().withMessage("Product name must be a string").bail()
         .isLength({ min: 2, max: 100 }).withMessage("Product name must be between 2 and 100 characters"),
 
-    body("price")
-        .notEmpty().withMessage("Price is required").bail()
-        .isFloat({ min: 1, max: 1000000 }).withMessage("Price must be between 1 and 1,000,000")
-        .toFloat(),
-
     body("description")
         .notEmpty().withMessage("Product description is required").bail()
         .isString().withMessage("Product description must be a string").bail()
         .isLength({ min: 10, max: 500 }).withMessage("Product description must be between 10 and 500 characters"),
+
+    body("subcategoryId")
+        .notEmpty().withMessage("Subcategory Id is required").bail()
+        .isInt({ gt: 0 }).withMessage("Subcategory Id must be a positive integer").bail()
+        .toInt()
 ];
+
+export const createProductVariantValidator = [
+    param("id")
+        .notEmpty().withMessage("Product id is required").bail()
+        .isInt({ gt: 0 }).withMessage("Product id must be a postive integer").bail()
+        .toInt(),
+
+    body("sku")
+        .notEmpty().withMessage("SKU is required").bail()
+        .isString().withMessage("SKU must be a string")
+        .isLength({ max: 100 }).withMessage("SKU must not exceed 100 characters")
+        .trim(),
+    
+    body("attributes")
+        .notEmpty().withMessage("Attributes are required").bail()
+        .isObject().withMessage("Attributes must be a valid JSON object"),
+]
+
+export const deleteProductVariantValidator = [
+    param("productId")
+        .notEmpty().withMessage("Product id is required").bail()
+        .isInt({ gt: 0 }).withMessage("Product id must be a positive integer").bail()
+        .toInt(),
+
+    param("variantId")
+        .notEmpty().withMessage("Variant id is required").bail()
+        .isInt({ gt: 0 }).withMessage("Variant id must be a positive integer").bail()
+        .toInt()
+]
 
 export const getProductByIdValidator = [
     param("id")
@@ -44,18 +73,19 @@ export const updateProductValidator = [
         .isString().withMessage("Product description must be a string").bail()
         .isLength({ min: 10, max: 500 }).withMessage("Product description must be between 10 and 500 characters"),
 
-    body().custom((_, { req }) => {
-        const allowedFields = ["name", "price", "description"];
-        Object.keys(req.body).forEach((field) => {
-            if(!allowedFields.includes(field))
-                delete req.body[field];
-        });
+    body()
+        .custom((_, { req }) => {
+            const allowedFields = ["name", "price", "description"];
+            Object.keys(req.body).forEach((field) => {
+                if(!allowedFields.includes(field))
+                    delete req.body[field];
+            });
 
-        if(Object.keys(req.body).length === 0)
-            throw new Error("At least one field must be provided");
+            if(Object.keys(req.body).length === 0)
+                throw new Error("At least one field must be provided");
 
-        return true;
-    })
+            return true;
+        })
 ];
 
 export const deleteProductValidator = [
