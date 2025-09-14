@@ -14,12 +14,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.use("/auth", authRoutes);
-app.use("/users", userRoutes);
-app.use("/products", productRoutes);
-app.use("/cart", cartRoutes);
-app.use("/categories", categoryRoutes);
-app.use("/subcategories", subcategoryRoutes);
+app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/users", userRoutes);
+app.use("/api/v1/products", productRoutes);
+app.use("/api/v1/carts", cartRoutes);
+app.use("/api/v1/categories", categoryRoutes);
+app.use("/api/v1/subcategories", subcategoryRoutes);
 
 app.use(errorHandler);
 export { app };
