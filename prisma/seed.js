@@ -22,7 +22,7 @@ async function main() {
     await prisma.$transaction(
         categoriesData.map((cat) => 
             prisma.category.upsert({
-                where: { slug: slugify(cat.name, { lower: true } )},
+                where: { slug: slugify(cat.name, { lower: true }) },
                 update: {},
                 create: {
                     name: cat.name,
