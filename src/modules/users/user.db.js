@@ -10,7 +10,7 @@ export const createNewSeller = async (userId, pickupAddress, businessName, gstNu
 
         const seller = await prisma.seller.create({
             data: {
-                sellerId: userId,
+                userId: userId,
                 pickupAddress: pickupAddress,
                 businessName: businessName,
                 gstNumber: gstNumber,
