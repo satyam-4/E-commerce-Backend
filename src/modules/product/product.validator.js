@@ -18,7 +18,7 @@ export const createProductValidator = [
 ];
 
 export const createProductVariantValidator = [
-    param("id")
+    param("productId")
         .notEmpty().withMessage("Product id is required").bail()
         .isInt({ gt: 0 }).withMessage("Product id must be a postive integer").bail()
         .toInt(),
@@ -40,9 +40,9 @@ export const deleteProductVariantValidator = [
         .isInt({ gt: 0 }).withMessage("Product id must be a positive integer").bail()
         .toInt(),
 
-    param("variantId")
-        .notEmpty().withMessage("Variant id is required").bail()
-        .isInt({ gt: 0 }).withMessage("Variant id must be a positive integer").bail()
+    param("productVariantId")
+        .notEmpty().withMessage("Product variant id is required").bail()
+        .isInt({ gt: 0 }).withMessage("Product variant id must be a positive integer").bail()
         .toInt()
 ]
 

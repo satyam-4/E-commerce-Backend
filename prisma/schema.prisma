@@ -52,8 +52,8 @@ model RefreshToken {
 
 model Seller {
   id              String   @id @default(uuid())
-  sellerId        Int      @unique
-  user            User     @relation(fields: [sellerId], references: [id])
+  userId          Int      @unique
+  user            User     @relation(fields: [userId], references: [id])
   pickupAddress   String
   businessName    String
   gstNumber       String?
@@ -95,13 +95,13 @@ model Product {
   description    String
   subcategoryId  Int
   subcategory    Subcategory  @relation(fields: [subcategoryId], references: [id], onDelete: Cascade)
-  variants       Variant[]
+  variants       ProductVariant[]
   createdAt      DateTime     @default(now())
 
   @@map("products")
 }
 
-model Variant {
+model ProductVariant {
   id              Int       @id @default(autoincrement())
   sku             String    @unique
   productId       Int
@@ -110,18 +110,19 @@ model Variant {
   sellerVariants  SellerVariant[]
   createdAt       DateTime  @default(now())
 
-  @@map("variants")
+  @@map("product_variants")
 }
 
 model SellerVariant {
-  id         Int       @id @default(autoincrement())
-  sellerId   String 
-  seller     Seller    @relation(fields: [sellerId], references: [id], onDelete: Cascade)
-  variantId  Int  
-  variant    Variant   @relation(fields: [variantId], references: [id], onDelete: Cascade)
-  price      Float  
-  stock      Int
-  createdAt  DateTime  @default(now())
+  id                Int       @id @default(autoincrement())
+  sellerId          String 
+  seller            Seller    @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+  productVariantId  Int  
+  productVariant    ProductVariant   @relation(fields: [productVariantId], references: [id], onDelete: Cascade)
+  price             Float  
+  stock             Int
+  createdAt         DateTime  @default(now())
 
+  @@unique([productVariantId, sellerId])
   @@map("seller_variants")
 }

@@ -63,7 +63,7 @@ export const addProductVariant = async (productId, sku, attributes) => {
             throw new AppError(404, "Product not found");
         }
 
-        const variant = await prisma.variant.create({
+        const productVariant = await prisma.productVariant.create({
             data: {
                 sku: sku,
                 productId: productId,
@@ -71,7 +71,7 @@ export const addProductVariant = async (productId, sku, attributes) => {
             }
         });
 
-        return variant;
+        return productVariant;
     } catch (error) {
         if(error instanceof AppError) {
             throw error;
@@ -81,7 +81,7 @@ export const addProductVariant = async (productId, sku, attributes) => {
     }
 };
 
-export const destroyProductVariant = async (productId, variantId) => {
+export const destroyProductVariant = async (productId, productVariantId) => {
     try {
         const product = await prisma.product.findUnique({
             where: { id: productId }
@@ -91,19 +91,19 @@ export const destroyProductVariant = async (productId, variantId) => {
             throw new AppError(404, "Product not found");
         }
 
-        const variant = await prisma.variant.findUnique({
-            where: { id: variantId } 
+        const productVariant = await prisma.productVariant.findUnique({
+            where: { id: productVariantId } 
         });
 
-        if(!variant) {
-            throw new AppError(404, "Variant not found");
+        if(!productVariant) {
+            throw new AppError(404, "Product variant not found");
         }
 
-        await prisma.variant.delete({
-            where: { id: variantId }
+        const deletedProductVariant = await prisma.variant.delete({
+            where: { id: productVariantId }
         });
 
-        return variant;
+        return deletedProductVariant;
     } catch (error) {
         if(error instanceof AppError) {
             throw error;

@@ -48,7 +48,7 @@ router.route("/:productId/variants").post(
     createProductVariant
 );
 
-router.route("/:productId/variants/:variantId").delete(
+router.route("/:productId/variants/:productVariantId").delete(
     verifyJWT,
     checkRole(["SELLER", "ADMIN"]),
     deleteProductVariantValidator,
