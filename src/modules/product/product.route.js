@@ -22,8 +22,7 @@ import { checkRole } from "#middlewares/role.middleware.js";
 
 const router = express.Router();
 
-router.route("/").get(verifyJWT, getProducts);
-
+router.route("/").get(getProducts);
 router.route("/").post(
     verifyJWT, 
     checkRole(["SELLER", "ADMIN"]), 
@@ -31,15 +30,13 @@ router.route("/").post(
     validate, 
     createProduct
 );
-
 router.route("/:productId").delete(
     verifyJWT, 
     checkRole(["SELLER", "ADMIN"]), 
     deleteProductValidator,
     validate,
     deleteProduct
-)
-
+);
 router.route("/:productId/variants").post(
     verifyJWT, 
     checkRole(["SELLER", "ADMIN"]), 
@@ -47,22 +44,19 @@ router.route("/:productId/variants").post(
     validate, 
     createProductVariant
 );
-
 router.route("/:productId/variants/:productVariantId").delete(
     verifyJWT,
     checkRole(["SELLER", "ADMIN"]),
     deleteProductVariantValidator,
     validate,
     deleteProductVariant
-)
-
+);
 router.route("/:id").get(
     verifyJWT, 
     getProductByIdValidator, 
     validate, 
     getProductsById
 );
-
 router.route("/:id").patch(
     verifyJWT, 
     checkRole(["SELLER", "ADMIN"]), 
