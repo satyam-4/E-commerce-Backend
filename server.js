@@ -3,8 +3,6 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const Port = process.env.PORT || 3000;
-
-app.listen(Port, () => {
+app.listen(process.env.PORT || 5000, () => {
     console.log(`Server is listening at port ${Port}`);
 });
