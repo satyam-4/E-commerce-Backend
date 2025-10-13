@@ -18,10 +18,7 @@ import { validate } from "#middlewares/validate.middleware.js";
 
 const router = express.Router();
 
-router.route("/").get(
-    verifyJWT,
-    getAllSubcategories
-);
+router.route("/").get(getAllSubcategories);
 router.route("/:subcategoryId").get(
     verifyJWT,
     getSubcategoryByIdValidator,
