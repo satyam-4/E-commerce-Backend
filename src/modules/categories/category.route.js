@@ -22,10 +22,7 @@ import { validate } from "#middlewares/validate.middleware.js";
 
 const router = express.Router();
 
-router.route("/").get(
-    verifyJWT, 
-    getAllCategories
-);
+router.route("/").get(getAllCategories);
 router.route("/:categoryId").get(
     verifyJWT, 
     getCategoryByIdValidator, 
@@ -33,7 +30,6 @@ router.route("/:categoryId").get(
     getCategoryById
 );
 router.route("/:categoryId/subcategory").get(
-    verifyJWT, 
     getSubcategoriesByCategoryIdValidator, 
     validate, 
     getSubcategoriesByCategoryId

@@ -1,5 +1,6 @@
 import { AppError } from "#utils/AppError.js";
 import prisma from "../../prisma/client.js";
+import { queryBuilder } from "./product.service.js";
 
 export const addProducts = async (name, description, subcategoryId) => {
     try {
@@ -111,13 +112,66 @@ export const destroyProductVariant = async (productId, productVariantId) => {
 
         throw new AppError(500, "Error while deleting product variant");
     }
-}
+};
 
-export const getAllProducts = async () => {
+export const findProducts = async (filters) => {
     try {
-        const products = prisma.product.findMany();
+        const { where, orderBy, skip, take } = queryBuilder(filters);
+
+        const products = await prisma.product.findMany({
+            where,
+            where: {
+                subcategory: {
+                    slug: where.subcategory,
+                    category: {
+                        slug: where.category
+                    }
+                },
+                productVariants: {
+                    some: {
+                        sellerVariants: {
+                            some: {
+                                stock: { gt: 0 }
+                            }
+                        }
+                    }
+                }
+            },
+            orderBy,
+            select: {
+                id: true,
+                name: true,
+                createdAt: true,
+                productVariants: {
+                    where: {
+                        sellerVariants: {
+                            some: {
+                                stock: { gt: 0 }
+                            }
+                        }
+                    },
+                    select: {
+                        id: true,
+                        sku: true,
+                        attributes: true,
+                        sellerVariants: {
+                            select: {
+                                id: true,
+                                sellerId: true,
+                                price: true,
+                                stock: true
+                            }
+                        }
+                    },
+                }
+            },
+            skip: skip,
+            take: take
+        });
+
         return products;
     } catch (error) {
+        console.log(error);
         throw new AppError(500, "Error while fetching products");
     }
 };
@@ -173,4 +227,3 @@ export const updateProductById = async (productId, userId, updateData) => {
         throw new AppError(500, "Error while updating the product");
     }
 };
-

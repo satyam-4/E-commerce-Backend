@@ -7,13 +7,18 @@ import categoryRoutes from "./src/modules/categories/category.route.js";
 import subcategoryRoutes from "./src/modules/subcategories/subcategories.route.js";
 import sellerRoutes from "./src/modules/sellers/seller.route.js";
 import { errorHandler } from "./src/middlewares/errorHandler.middleware.js";
-import cookieParser from "cookie-parser";;
+import cookieParser from "cookie-parser";
+import cors from "cors";
 
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(cors({
+    origin: "https://flipcart-vbjl.onrender.com",
+    credentials: true
+}));
 
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/users", userRoutes);

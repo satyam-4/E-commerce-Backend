@@ -54,6 +54,7 @@ model Seller {
   id              String   @id @default(uuid())
   userId          Int      @unique
   user            User     @relation(fields: [userId], references: [id])
+  sellerRating    Float    @default(0)
   pickupAddress   String
   businessName    String
   gstNumber       String?
@@ -90,13 +91,13 @@ model Subcategory {
 }
 
 model Product {
-  id             Int          @id @default(autoincrement())
-  name           String  
-  description    String
-  subcategoryId  Int
-  subcategory    Subcategory  @relation(fields: [subcategoryId], references: [id], onDelete: Cascade)
-  variants       ProductVariant[]
-  createdAt      DateTime     @default(now())
+  id               Int          @id @default(autoincrement())
+  name             String  
+  description      String
+  subcategoryId    Int
+  subcategory      Subcategory  @relation(fields: [subcategoryId], references: [id], onDelete: Cascade)
+  productVariants  ProductVariant[]
+  createdAt        DateTime     @default(now())
 
   @@map("products")
 }
@@ -114,15 +115,25 @@ model ProductVariant {
 }
 
 model SellerVariant {
-  id                Int       @id @default(autoincrement())
+  id                Int              @id @default(autoincrement())
   sellerId          String 
-  seller            Seller    @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+  seller            Seller           @relation(fields: [sellerId], references: [id], onDelete: Cascade)
   productVariantId  Int  
   productVariant    ProductVariant   @relation(fields: [productVariantId], references: [id], onDelete: Cascade)
   price             Float  
   stock             Int
-  createdAt         DateTime  @default(now())
+  createdAt         DateTime         @default(now())
 
   @@unique([productVariantId, sellerId])
   @@map("seller_variants")
+}
+
+model ProductRating {
+  id             Int       @id @default(autoincrement())
+  productRating  Float     @default(0)
+  productId      Int  
+  product        Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt      DateTime  @default(now())
+
+  @@map("product_ratings")
 }
