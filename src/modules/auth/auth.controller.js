@@ -58,7 +58,8 @@ const signinUser = async (req, res) => {
     })
     .json({
         success: true,
-        message: "User logged in successfully"
+        message: "User logged in successfully",
+        data: user
     });
 };
 
