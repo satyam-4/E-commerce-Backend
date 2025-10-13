@@ -4,13 +4,15 @@ import {
     addProductVariant, 
     destroyProduct, 
     destroyProductVariant, 
-    getAllProducts, 
+    findProducts, 
     getProductById, 
     updateProductById 
 } from "./product.db.js";
 
 const getProducts = async (req, res) => {
-    const products = await getAllProducts();
+    const filters = req.query;
+    const products = await findProducts(filters);
+    
     return res
     .status(200)
     .json({
