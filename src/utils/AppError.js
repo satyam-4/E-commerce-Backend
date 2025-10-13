@@ -1,5 +1,5 @@
 class AppError extends Error {
-    constructor(
+    constructor (
         statusCode = 500, 
         message = "Internal server error",
         errors = [],
@@ -11,7 +11,7 @@ class AppError extends Error {
         this.success = false;
         this.data = null;
 
-        if(stack) {
+        if (stack) {
             this.stack = stack;
         } else {
             Error.captureStackTrace(this, this.stack);
