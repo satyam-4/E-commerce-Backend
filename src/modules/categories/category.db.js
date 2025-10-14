@@ -19,6 +19,7 @@ export const findCategoryById = async (categoryId) => {
         });
         return category;
     } catch (error) {
+        console.error("Prisma fetch error:", error);
         throw new AppError(500, "Error while fetching category");
     }
 };
