@@ -31,6 +31,7 @@ model User {
   role           Role            @default(BUYER) 
   refreshTokens  RefreshToken[] 
   seller         Seller?
+  reviews        ProductReview[]
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
 
@@ -109,6 +110,8 @@ model ProductVariant {
   product         Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
   attributes      Json
   sellerVariants  SellerVariant[]
+  reviews         ProductReview[]
+  reviewSummary   ProductReviewSummary?
   createdAt       DateTime  @default(now())
 
   @@map("product_variants")
@@ -128,12 +131,29 @@ model SellerVariant {
   @@map("seller_variants")
 }
 
-model ProductRating {
-  id             Int       @id @default(autoincrement())
-  productRating  Float     @default(0)
-  productId      Int  
-  product        Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
-  createdAt      DateTime  @default(now())
+model ProductReview {
+  id                Int             @id @default(autoincrement())
+  rating            Float  
+  review            String?
+  userId            Int
+  user              User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productVariantId  Int 
+  productVariant    ProductVariant  @relation(fields: [productVariantId], references: [id], onDelete: Cascade)
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
 
-  @@map("product_ratings")
+  @@unique([userId, productVariantId])
+  @@map("product_reviews")
+}
+
+model ProductReviewSummary {
+  id                Int             @id @default(autoincrement())
+  productVariantId  Int             @unique
+  productVariant    ProductVariant  @relation(fields: [productVariantId], references: [id], onDelete: Cascade)
+  averageRating     Float           @default(0)
+  totalReviews      Int             @default(0)
+  ratingBreakdown   Json?
+  updatedAt         DateTime        @default(now())  @updatedAt
+
+  @@map("product_review_summaries")
 }
