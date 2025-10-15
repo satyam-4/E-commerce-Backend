@@ -18,7 +18,7 @@ app.use(cookieParser());
 app.use(cors({
     origin: [
         "https://flipcart-vbjl.onrender.com",
-        "http://localhost:3000/"
+        "http://localhost:3000"
     ],
     credentials: true
 }));
