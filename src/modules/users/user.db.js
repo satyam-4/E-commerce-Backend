@@ -1,7 +1,7 @@
 import { AppError } from "#utils/AppError.js";
 import prisma from "../../prisma/client.js"
 
-export const createNewSeller = async (userId, pickupAddress, businessName, gstNumber, bankInfo) => {
+export const createNewSeller = async (userId, pickupAddress, businessName, gstNumber, bankAccountNumber, ifscCode, bankName) => {
     try {
         await prisma.user.update({
             where: { id: userId },
@@ -14,12 +14,15 @@ export const createNewSeller = async (userId, pickupAddress, businessName, gstNu
                 pickupAddress: pickupAddress,
                 businessName: businessName,
                 gstNumber: gstNumber,
-                bankInfo: bankInfo     
+                bankAccountNumber: bankAccountNumber,
+                ifscCode: ifscCode,
+                bankName: bankName
             }
         });
 
         return seller;
     } catch (error) {
+        console.error("Prisma error:", error);
         throw new AppError(500, "Error while creating new seller")
     }
 }
