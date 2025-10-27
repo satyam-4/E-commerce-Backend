@@ -6,7 +6,7 @@ export const findAllCategories = async () => {
         const res = await prisma.category.findMany();
         return res;
     } catch (error) {
-        console.error("Prisma fetch error:", error);
+        console.error("Prisma error:", error);
         throw new AppError(500, "Error while fetching categories");
     }
 };
@@ -20,7 +20,7 @@ export const findCategoryById = async (categoryId) => {
         });
         return category;
     } catch (error) {
-        console.error("Prisma fetch error:", error);
+        console.error("Prisma error:", error);
         throw new AppError(500, "Error while fetching category");
     }
 };
@@ -32,7 +32,7 @@ export const findsubcategoriesByCategoryId = async (categoryId) => {
         });
         return res;
     } catch (error) {
-        console.error("Prisma fetch error:", error);
+        console.error("Prisma error:", error);
         throw new AppError(500, "Error while fetching subcategories");
     }
 };
@@ -59,7 +59,7 @@ export const addSubcategory = async (subcategoryData) => {
         if(error instanceof AppError) {
             throw error;
         }
-        console.error("Prisma fetch error:", error);
+        console.error("Prisma error:", error);
         throw new AppError(500, "Error while creating new subcategory");
     }
 };
@@ -86,7 +86,7 @@ export const addNewCategory = async(categoryData) => {
         if(error instanceof AppError) {
             throw error;
         }
-        console.error("Prisma fetch error:", error);
+        console.error("Prisma error:", error);
         throw new AppError(500, "Error while creating new category");
     }
 };
@@ -103,7 +103,7 @@ export const updateCategoryById = async(categoryId, categoryData) => {
         if(error instanceof AppError) {
             throw error;
         }
-        console.error("Prisma fetch error:", error);
+        console.error("Prisma error:", error);
         throw new AppError(500, "Error while updating category");
     }
 };
@@ -115,7 +115,7 @@ export const destroyCategoryById = async(categoryId) => {
         });
         return deletedCategory;
     } catch (error) {
-        console.error("Prisma fetch error:", error);
+        console.error("Prisma error:", error);
         throw new AppError(500, "Error while deleting the category");
     }
 };

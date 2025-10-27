@@ -3,13 +3,13 @@ import { createNewSeller } from "./user.db.js";
 
 const becomeSeller = async (req, res) => {
     const userId = req.user.id;
-    const { pickupAddress, businessName, gstNumber, bankInfo } = req.body;
+    const { pickupAddress, businessName, gstNumber, bankAccountNumber, ifscCode, bankName } = req.body;
 
     if(req.user.role === "seller") {
         throw new AppError(400, "You are already a seller");
     }
 
-    const seller = await createNewSeller(userId, pickupAddress, businessName, gstNumber, bankInfo);
+    const seller = await createNewSeller(userId, pickupAddress, businessName, gstNumber, bankAccountNumber, ifscCode, bankName);
 
     return res
     .status(200)
