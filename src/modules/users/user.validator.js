@@ -13,6 +13,7 @@ export const becomeSellerValidator = [
 
     body("gstNumber")
         .notEmpty().withMessage("GST number is required")
+        .isString().withMessage("GST number must be a string")
         .matches(/^([0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1})$/)
         .withMessage("Invalid GST number format"),
 
@@ -23,6 +24,7 @@ export const becomeSellerValidator = [
 
     body("ifscCode")
         .notEmpty().withMessage("IFSC code is required")
+        .isString().withMessage("IFSC code must be a string")
         .matches(/^[A-Z]{4}0[A-Z0-9]{6}$/)
         .withMessage("Invalid IFSC code format"),
 
