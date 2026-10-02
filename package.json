@@ -7,10 +7,11 @@
   "imports": {
     "#middlewares/*": "./src/middlewares/*",
     "#utils/*": "./src/utils/*",
-    "#modules/*": "./src/modules/*"
+    "#modules/*": "./src/modules/*",
+    "#config/*": "./src/config/*"
   },
   "scripts": {
-    "start": "node server.js",
+    "server": "node server.js",
     "postinstall": "prisma generate",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -33,6 +34,7 @@
     "pino": "^10.3.1",
     "pnpm": "^11.5.2",
     "prisma": "^6.12.0",
-    "slugify": "^1.6.6"
+    "slugify": "^1.6.6",
+    "zod": "^4.6.5"
   }
 }
