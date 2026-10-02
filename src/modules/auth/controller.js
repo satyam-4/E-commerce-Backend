@@ -81,7 +81,7 @@ const signoutUser = () => {
 
     return res
     .status(200)
-    .clearCookie("sid", SESSION_ABSOLUTE_MAX_AGE)
+    .clearCookie("sid", SESSION_COOKIE_OPTIONS)
     .json({
         success: true,
         message: "User logged out successfully"
