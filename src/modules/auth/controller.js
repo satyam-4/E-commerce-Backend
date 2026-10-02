@@ -2,15 +2,13 @@ import { checkUserExistence, createNewUser, destroySessionToken, getUserByEmail,
 import { encryptPassword, generateSessionToken, hashToken, verifyPassword } from "./service.js";
 import { AppError } from "#utils/AppError.js";
 import { sanitizeUser } from "./serializer.js";
+import { env } from "#config/env.js";
 
-const { SESSION_MAX_AGE, SESSION_ABSOLUTE_MAX_AGE } = process.env;
-
-const SLIDING_MS = parseInt(SESSION_MAX_AGE || "604800000");
-const ABSOLUTE_MS = parseInt(SESSION_ABSOLUTE_MAX_AGE || "2592000000");
+export const SESSION_COOKIE_NAME = env.SESSION_COOKIE_NAME;
 
 export const SESSION_COOKIE_OPTIONS = {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: env.NODE_ENV === "production",
     sameSite: "lax"
 };
 
@@ -54,16 +52,16 @@ const signinUser = async (req, res) => {
     const hashedToken = await hashToken(rawToken);
 
     const now = new Date();
-    const expiresAt = new Date(now.getTime() + SLIDING_MS);
-    const absoluteExp = new Date(now.getTime() + ABSOLUTE_MS);
+    const expiresAt = new Date(now.getTime() + env.SESSION_MAX_AGE);
+    const absoluteExp = new Date(now.getTime() + env.SESSION_ABSOLUTE_MAX_AGE);
 
     await storeSessionToken(user.id, hashedToken, ipAddress, userAgent, expiresAt, absoluteExp);
 
     return res 
     .status(200)
-    .cookie("sid", hashedToken, {
+    .cookie(SESSION_COOKIE_NAME, hashedToken, {
         ...SESSION_COOKIE_OPTIONS,
-        maxAge: ABSOLUTE_MS
+        maxAge: env.SESSION_ABSOLUTE_MAX_AGE
     })
     .json({
         success: true,
@@ -72,7 +70,7 @@ const signinUser = async (req, res) => {
     });
 };
 
-const signoutUser = () => {
+const signoutUser = async (req, res) => {
     const sessionToken = req.cookies?.sid;
 
     if (sessionToken) {
@@ -81,7 +79,7 @@ const signoutUser = () => {
 
     return res
     .status(200)
-    .clearCookie("sid", SESSION_COOKIE_OPTIONS)
+    .clearCookie(SESSION_COOKIE_NAME, SESSION_COOKIE_OPTIONS)
     .json({
         success: true,
         message: "User logged out successfully"
