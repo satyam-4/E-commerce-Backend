@@ -1,4 +1,5 @@
-import { logger } from "../config/logger";
+import { logger } from "../config/logger.js";
+import { env } from "#config/env.js";
 
 export const errorHandler = (err, req, res, next) => {
     const statusCode = err?.statusCode || 500;
@@ -8,7 +9,7 @@ export const errorHandler = (err, req, res, next) => {
         "Request error"
     );
 
-    if (process.env.NODE_ENV === "development") {
+    if (env.NODE_ENV === "development") {
         return res
         .status(statusCode)
         .json({
