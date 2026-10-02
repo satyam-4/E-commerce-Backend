@@ -11,6 +11,7 @@ import sellerReviewRoutes from "./src/modules/sellerReview/route.js";
 import { errorHandler } from "./src/middlewares/errorHandler.middleware.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import { env } from "#config/env.js";
 
 const app = express();
 
@@ -18,10 +19,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(cors({
-    origin: [
-        "https://flipcart-vbjl.onrender.com",
-        "http://localhost:3000"
-    ],
+    origin: env.CORS_ORIGINS,
     credentials: true
 }));
 
